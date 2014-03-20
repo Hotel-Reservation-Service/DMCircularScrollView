@@ -82,8 +82,6 @@
     return self;
 }
 
-
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -100,7 +98,6 @@
     return nil;
 }
 
-
 - (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event {
     UIView* child = nil;
     // Allows subviews of the scrollview receiving touches
@@ -108,7 +105,6 @@
         return scrollView;
     return child;
 }
-
 
 - (void) setAllowTapToChangePage:(BOOL)nallowTapToChangePage {
     allowTapToChangePage = nallowTapToChangePage;
@@ -120,7 +116,6 @@
     }
     if (allowTapToChangePage)   [scrollView addGestureRecognizer:singleTapGesture];
 }
-
 
 #pragma mark - Properties
 
@@ -429,6 +424,5 @@
     UIGraphicsEndImageContext();
     return img;
 }
-
 
 @end
