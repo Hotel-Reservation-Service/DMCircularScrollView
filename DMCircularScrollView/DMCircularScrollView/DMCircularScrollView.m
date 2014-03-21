@@ -15,17 +15,17 @@
     UIScrollView*                               scrollView;
     
     // Block Handlers
-    DMCircularScrollViewDataSource              dataSource;
     DMCircularScrollViewPageChanged             handlerPageChange;
-    
-    NSUInteger                                  previousPageIndex;
-    NSUInteger                                  currentPageIndex;
-    NSUInteger                                  totalPages;
     
     NSMutableArray*                             tempRepresentations;    // temp cached representation of your UIViews (if needed)
     UITapGestureRecognizer *                    singleTapGesture;
 }
 
+@property(nonatomic, readwrite) NSUInteger previousPageIndex;
+@property(nonatomic, readwrite) NSUInteger currentPageIndex;
+@property(nonatomic, readwrite) NSUInteger totalPages;
+
+@property (nonatomic, strong, readwrite) DMCircularScrollViewDataSource dataSource;
 @property (nonatomic,readonly)  NSUInteger      visiblePageCount;
 @property (nonatomic,readonly)  CGSize          pageSize;
 
@@ -46,7 +46,7 @@
 
 -(void) commonInit{
     tempRepresentations = [[NSMutableArray alloc] init];
-    previousPageIndex = 0;
+    _previousPageIndex = 0;
     
     self.clipsToBounds = YES;
     
@@ -131,13 +131,13 @@
 }
 
 - (void) setPageCount:(NSUInteger)npageCount withDataSource:(DMCircularScrollViewDataSource)ndataSource {
-    totalPages = npageCount;
-    dataSource = ndataSource;
+    _totalPages = npageCount;
+    self.dataSource = ndataSource;
     [self reloadData];
 }
 
 - (void) setCurrentPageIndex:(NSUInteger)ncurrentPageIndex {
-    if (ncurrentPageIndex != currentPageIndex && ncurrentPageIndex < totalPages)
+    if (ncurrentPageIndex != currentPageIndex && ncurrentPageIndex < _totalPages)
         [self relayoutPageItems:ncurrentPageIndex];
 }
 
@@ -299,6 +299,7 @@
 }
 
 - (void) reloadData {
+    NSLog(@"frame:%@, pageWidth:%f, pageSize:%@", NSStringFromCGRect(self.frame), self.pageWidth, NSStringFromCGSize(self.pageSize));
     NSUInteger visiblePages = ceilf(self.frame.size.width/self.pageSize.width);
 
     // We need to check to see if self.frame.size.width is evenly divisible
@@ -311,8 +312,9 @@
     visiblePages += 1;
     
     [scrollView setContentSize:CGSizeMake(self.pageSize.width*visiblePages, scrollView.frame.size.height)];
+    NSLog(@"content size is %@", NSStringFromCGSize(scrollView.contentSize));
     
-    if (dataSource != nil) {
+    if (self.dataSource != nil) {
         [scrollView setContentOffset:CGPointMake(self.pageSize.width, 0.0f)];
         [self relayoutPageItems:NSUIntegerMax];
     }
@@ -328,8 +330,8 @@
     
     while (remainingOffset > 0) {
         for (NSUInteger k = 0; k < abs(offset); ++k) {
-            if ((value + singleStepOffset) < 0)                 value = (totalPages-1);
-            else if ((value + singleStepOffset) >= totalPages)  value = 0;
+            if ((value + singleStepOffset) < 0)                 value = (_totalPages-1);
+            else if ((value + singleStepOffset) >= _totalPages)  value = 0;
             else                                                value += singleStepOffset;
             
             remainingOffset -= 1;
@@ -343,7 +345,7 @@
 
 - (NSMutableArray *) viewsFromIndex:(NSUInteger) centralIndex preloadOffset:(NSUInteger) offsetLeftRight {
     
-    if (!dataSource){
+    if (self.dataSource == nil){
         return nil;
     }
     
@@ -359,7 +361,7 @@
             return ;
         }
         
-        UIView *targetView = dataSource(indexOfView);
+        UIView *targetView = self.dataSource(indexOfView);
         targetView.tag = indexOfView;
         if (([viewsList containsObject:targetView] == NO && indexOfView != centralIndex) ||
             (centralIndex == indexOfView && idx == offsetLeftRight))
@@ -393,7 +395,7 @@
     [tempRepresentations removeAllObjects];
     
     if (handlerPageChange != nil)
-        handlerPageChange(currentPageIndex,previousPageIndex);
+        handlerPageChange(currentPageIndex,_previousPageIndex);
     
     NSUInteger visiblePagesPerSide = ceilf(floor(self.frame.size.width/self.pageSize.width)/2.0f);
     NSUInteger pagesToCachePerSide = visiblePagesPerSide*2;
@@ -414,7 +416,7 @@
     }
     [scrollView setContentOffset:CGPointMake(self.pageSize.width, 0.0f)];
     
-    previousPageIndex = self.currentPageIndex;
+    _previousPageIndex = self.currentPageIndex;
 }
 
 - (UIImage *) imageWithView:(UIView *)view {
