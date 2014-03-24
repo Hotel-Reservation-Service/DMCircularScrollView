@@ -14,7 +14,7 @@ typedef void(^DMCircularScrollViewPageChanged)(NSUInteger currentPageIndex,NSUIn
 @interface DMCircularScrollView : UIView
 
 @property (nonatomic,assign)    CGFloat                             pageWidth;              // Single page width (picker is centered)
-@property (nonatomic,readonly)    NSUInteger                          currentPageIndex;       // Current page index (DMCircularScrollView uses tag property of UIVIew, so don't touch it.)
+@property (nonatomic,readwrite)    NSUInteger                          currentPageIndex;       // Current page index (DMCircularScrollView uses tag property of UIVIew, so don't touch it.)
 @property (nonatomic,assign)    BOOL                                allowTapToChangePage;   // Allows single tap on scroll view side to change next/prev
 @property (nonatomic,assign)    BOOL                                displayBorder;          // Display a green border around the scrollView
 @property (copy)                DMCircularScrollViewPageChanged     handlePageChange;       // Block to catch page change event

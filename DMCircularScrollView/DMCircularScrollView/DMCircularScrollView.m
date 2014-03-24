@@ -22,7 +22,6 @@
 }
 
 @property(nonatomic, readwrite) NSUInteger previousPageIndex;
-@property(nonatomic, readwrite) NSUInteger currentPageIndex;
 @property(nonatomic, readwrite) NSUInteger totalPages;
 
 @property (nonatomic, strong, readwrite) DMCircularScrollViewDataSource dataSource;
