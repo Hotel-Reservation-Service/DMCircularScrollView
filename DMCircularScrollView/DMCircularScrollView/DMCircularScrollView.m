@@ -160,6 +160,9 @@
 
 -(void)goNextAnimated:(BOOL)animated{
     [scrollView setContentOffset:CGPointMake(scrollView.contentOffset.x + self.pageWidth, 0) animated:animated];
+//    [UIView animateWithDuration:2.0 animations:^{
+//        scrollView.contentOffset = CGPointMake(scrollView.contentOffset.x + self.pageWidth, 0);
+//    }];
 }
 
 -(void)goBack:(id)sender{
@@ -299,7 +302,7 @@
 }
 
 - (void) reloadData {
-    NSLog(@"frame:%@, pageWidth:%f, pageSize:%@", NSStringFromCGRect(self.frame), self.pageWidth, NSStringFromCGSize(self.pageSize));
+//    NSLog(@"frame:%@, pageWidth:%f, pageSize:%@", NSStringFromCGRect(self.frame), self.pageWidth, NSStringFromCGSize(self.pageSize));
     NSUInteger visiblePages = ceilf(self.frame.size.width/self.pageSize.width);
 
     // We need to check to see if self.frame.size.width is evenly divisible
@@ -312,7 +315,7 @@
     visiblePages += 1;
     
     [scrollView setContentSize:CGSizeMake(self.pageSize.width*visiblePages, scrollView.frame.size.height)];
-    NSLog(@"content size is %@", NSStringFromCGSize(scrollView.contentSize));
+//    NSLog(@"content size is %@", NSStringFromCGSize(scrollView.contentSize));
     
     if (self.dataSource != nil) {
         [scrollView setContentOffset:CGPointMake(self.pageSize.width, 0.0f)];
