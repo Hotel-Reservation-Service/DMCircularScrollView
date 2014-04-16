@@ -90,6 +90,10 @@
     return self;
 }
 
+- (void)dealloc {
+    [scrollView setDelegate:nil];
+}
+
 - (UIView *) viewAtLocation:(CGPoint) touchLocation {
     for (UIView *subView in scrollView.subviews)
         if (CGRectContainsPoint(subView.frame, touchLocation))
